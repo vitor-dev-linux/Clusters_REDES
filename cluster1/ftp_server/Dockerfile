@@ -1,0 +1,3 @@
+FROM fauria/vsftpd
+COPY vsftpd.conf /etc/vsftpd/vsftpd.conf
+

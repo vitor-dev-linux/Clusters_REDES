@@ -1,0 +1,48 @@
+version: '3'
+services:
+  ftp:
+    image: fauria/vsftpd
+    container_name: cluster1-ftp
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    environment:
+      - FTP_USER=myuser
+      - FTP_PASS=mypassword
+      - PASV_ENABLE=YES
+      - PASV_MIN_PORT=30000
+      - PASV_MAX_PORT=30009
+      - PASV_ADDRESS=127.0.0.1 # Substitua pelo IP do host se necessário
+    volumes:
+      - ./ftp_data:/home/vsftpd
+    networks:
+      - cluster1_network
+
+  web:
+    build: ./web_server
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ftp_data:/usr/share/nginx/html/ftp_data 
+      - ./web_server/index.html:/usr/share/nginx/html/index.html  # Montando o arquivo index.html
+      - ./nginx_ssl_conf:/etc/nginx/conf.d
+      - certs:/etc/nginx/certs
+    networks:
+      - cluster1_network
+    depends_on:
+      - cert_generator
+
+  cert_generator:
+    build: ./cert_generator
+    volumes:
+      - certs:/certs
+    networks:
+      - cluster1_network
+
+networks:
+  cluster1_network:
+    driver: bridge
+
+volumes:
+  certs:

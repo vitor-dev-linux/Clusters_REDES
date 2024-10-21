@@ -1,0 +1,21 @@
+version: '3'
+services:
+  dns:
+    build: ./dns_server  # Apenas construa a partir do Dockerfile
+    container_name: cluster2-dns
+    ports:
+      - "53:53/udp"
+    networks:
+      - cluster2_network
+
+  ntp:
+    build: ./ntp_server
+    container_name: cluster2-ntp
+    ports:
+      - "123:123/udp"
+    networks:
+      - cluster2_network
+
+networks:
+  cluster2_network:
+    driver: bridge
