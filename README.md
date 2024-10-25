@@ -1,4 +1,4 @@
-### Instruções de uso do ambiente docker ###
+### Instruções de uso do ambiente docker (Em ambiente local) ###
 * Execute
 ```
 ./install.sh
